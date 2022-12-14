@@ -16,11 +16,13 @@ export const loader = async () => {
 export default function JokesIndexRoute() {
   const data = useLoaderData<typeof loader>();
 
-  return (
-    <div>
-      <p>Here's a random joke:</p>
-      <p>{data.randomJoke.content}</p>
-      <Link to={data.randomJoke.id}>"{data.randomJoke.name}" Permalink</Link>
-    </div>
-  );
+  if (data.randomJoke !== undefined) {
+    return (
+      <div>
+	<p>Here's a random joke:</p>
+	<p>{data.randomJoke.content}</p>
+	<Link to={data.randomJoke.id}>"{data.randomJoke.name}" Permalink</Link>
+      </div>
+    );
+  } 
 }
