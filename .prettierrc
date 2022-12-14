@@ -1,0 +1,9 @@
+{
+    "printWidth": 80,
+    "editor.formatOnSave": true,
+    "tabWidth": 2,
+    "requireConfig": false,
+    "useTabs": false,
+    "bracketSpacing": true,
+    "semi": true
+}
