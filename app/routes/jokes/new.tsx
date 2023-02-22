@@ -1,8 +1,20 @@
-import { ActionArgs, redirect } from "@remix-run/node";
-import { useActionData } from "@remix-run/react";
+import { ActionArgs, json, LoaderArgs, redirect } from "@remix-run/node";
+import { Link, useActionData, useCatch } from "@remix-run/react";
 import { db } from "~/utils/db.server";
+import { getUserId } from "~/utils/session.server";
 import { badRequest } from "~/utils/request.server";
 import { requireUserId } from "~/utils/session.server";
+
+export const loader = async ({request}: LoaderArgs) => {
+  const userId = await getUserId(request);
+  if (typeof userId !== "string") {
+    throw new Response("Must be logged in to submit a new joke", {
+      status: 401,
+    })
+  }
+
+  return json({ userId });
+};
 
 export const action = async ({ request }: ActionArgs) => {
   const userId = await requireUserId(request);
@@ -108,5 +120,24 @@ export default function NewJokeRoute() {
         </div>
       </form>
     </div>
+  );
+}
+
+export function CatchBoundary() {
+  const caught = useCatch();
+  if (caught.status === 401) {
+    return (
+      <div className="error-container">
+      You must be logged in to submit a joke. Login or signup <Link to="/login">here.</Link>
+      </div>
+    );
+  }
+
+  throw new Error(`Unhandled error: ${caught.status}`);
+};
+
+export function ErrorBoundary() {
+  return (
+    <div className="error-container">Something went wrong</div>
   );
 }
